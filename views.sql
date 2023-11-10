@@ -13,6 +13,6 @@ CREATE VIEW Registrations AS
     UNION
     (SELECT idnr AS student, course, 'waiting' AS status 
         FROM Students, Registered
-            WHERE (idnr, course) NOT IN (SELECT student, course FROM Registered));
+            WHERE (idnr, course) IN (SELECT student, course FROM WaitingList));
 
 
