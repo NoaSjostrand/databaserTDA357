@@ -68,6 +68,7 @@ CREATE TABLE Registered(
     PRIMARY KEY (student, course)
 );
 
+-- # TODO Begränsa grade till U,3,4,5
 CREATE TABLE Taken(
     student CHAR(10) REFERENCES Students,
     course CHAR(6) REFERENCES Courses,
