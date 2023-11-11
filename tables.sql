@@ -74,8 +74,8 @@ CREATE TABLE Taken(
     student CHAR(10) REFERENCES Students,
     course CHAR(6) REFERENCES Courses,
     grade CHAR(1) NOT NULL,
-    PRIMARY KEY (student, course)
-    CHECK grade in ('U', '3', '4', '5')
+    PRIMARY KEY (student, course),
+    CHECK (grade in ('U', '3', '4', '5'))
 );
 
 CREATE TABLE WaitingList(
