@@ -30,23 +30,23 @@ CREATE TABLE StudentBranches (
     FOREIGN KEY (branch, program) REFERENCES Branches(name, program)
 );
 
-CREATE TABLE Classifications(
+CREATE TABLE Classifications (
     name TEXT PRIMARY KEY
 );
 
-CREATE TABLE Classified(
+CREATE TABLE Classified (
     course CHAR(6) REFERENCES Courses,
     classification TEXT REFERENCES Classifications,
     PRIMARY KEY (course, classification)
 );
 
-CREATE TABLE MandatoryProgram(
+CREATE TABLE MandatoryProgram (
     course CHAR(6) REFERENCES Courses,
     program TEXT,
     PRIMARY KEY (course, program)
 );
 
-CREATE TABLE MandatoryBranch(
+CREATE TABLE MandatoryBranch (
     course CHAR(6) REFERENCES Courses,
     branch TEXT,
     program TEXT,
@@ -54,7 +54,7 @@ CREATE TABLE MandatoryBranch(
     PRIMARY KEY (course, branch, program)
 );
 
-CREATE TABLE RecommendedBranch(
+CREATE TABLE RecommendedBranch (
     course CHAR(6) REFERENCES Courses,
     branch TEXT,
     program TEXT,
@@ -62,15 +62,13 @@ CREATE TABLE RecommendedBranch(
     PRIMARY KEY (course, branch, program)
 );
 
-CREATE TABLE Registered(
+CREATE TABLE Registered (
     student CHAR(10) REFERENCES Students,
     course CHAR(6) REFERENCES Courses,
     PRIMARY KEY (student, course)
 );
 
--- # TODO Begränsa grade till U,3,4,5
--- Löst
-CREATE TABLE Taken(
+CREATE TABLE Taken (
     student CHAR(10) REFERENCES Students,
     course CHAR(6) REFERENCES Courses,
     grade CHAR(1) NOT NULL,
@@ -78,7 +76,7 @@ CREATE TABLE Taken(
     CHECK (grade in ('U', '3', '4', '5'))
 );
 
-CREATE TABLE WaitingList(
+CREATE TABLE WaitingList (
     student CHAR(10) REFERENCES Students,
     course CHAR(6) REFERENCES LimitedCourses,
     position INT NOT NULL,

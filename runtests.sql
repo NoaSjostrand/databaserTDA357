@@ -36,3 +36,42 @@ SELECT student, course, status FROM Registrations ORDER BY (status, course, stud
 
 
 -- Life-hack: When working on a new view you can write it as a query here (without creating a view) and when it works just add CREATE VIEW and put it in views.sql
+
+
+-- PassedCourses
+WITH
+PassedCourses AS
+(SELECT student, course, credits
+    FROM Taken, Courses
+        WHERE course=code AND grade IN ('3', '4', '5')),
+
+-- UnreadMandatory
+UnreadMandatory AS
+((SELECT student, course
+    FROM (
+
+(SELECT idnr AS student, course
+    FROM Students NATURAL JOIN MandatoryProgram)
+UNION
+(SELECT student, course
+    FROM StudentBranches NATURAL JOIN MandatoryBranch)))
+
+EXCEPT
+(SELECT student, course FROM FinishedCourses WHERE grade != 'U')),
+
+totalCredits AS
+(SELECT student, SUM(credits) AS totalcredits
+    FROM Taken LEFT OUTER JOIN Courses ON code=course
+        WHERE grade != 'U'
+            GROUP BY student),
+
+mandatoryLeft AS
+(SELECT student, COUNT(course) AS mandatoryleft
+    FROM UnreadMandatory
+        GROUP BY student)
+
+
+-- 
+
+SELECT * FROM mandatoryLeft
+
