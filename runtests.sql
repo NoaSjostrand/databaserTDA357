@@ -68,10 +68,14 @@ totalCredits AS
 mandatoryLeft AS
 (SELECT student, COUNT(course) AS mandatoryleft
     FROM UnreadMandatory
-        GROUP BY student)
+        GROUP BY student),
 
 
--- 
+mathCredits AS
+(SELECT student, SUM(credits) AS mathcredits 
+    FROM PassedCourses RIGHT OUTER JOIN Classified USING (course)
+        WHERE classification = 'math'
+            GROUP BY student)
 
-SELECT * FROM mandatoryLeft
+SELECT * FROM mathCredits
 
