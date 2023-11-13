@@ -27,7 +27,7 @@ SELECT student, course, courseName, grade, credits FROM FinishedCourses ORDER BY
 
 SELECT student, course, status FROM Registrations ORDER BY (status, course, student);
 
--- SELECT student, totalCredits, mandatoryLeft, mathCredits, seminarCourses, qualified FROM PathToGraduation ORDER BY student;
+SELECT student, totalCredits, mandatoryLeft, mathCredits, seminarCourses, qualified FROM PathToGraduation ORDER BY student;
 
 -- Helper views for PathToGraduation (optional)
 --SELECT student, course, credits FROM PassedCourses ORDER BY (student, course);
@@ -39,43 +39,5 @@ SELECT student, course, status FROM Registrations ORDER BY (status, course, stud
 
 
 -- PassedCourses
-WITH
-PassedCourses AS
-(SELECT student, course, credits
-    FROM Taken, Courses
-        WHERE course=code AND grade IN ('3', '4', '5')),
 
--- UnreadMandatory
-UnreadMandatory AS
-((SELECT student, course
-    FROM (
-
-(SELECT idnr AS student, course
-    FROM Students NATURAL JOIN MandatoryProgram)
-UNION
-(SELECT student, course
-    FROM StudentBranches NATURAL JOIN MandatoryBranch)))
-
-EXCEPT
-(SELECT student, course FROM FinishedCourses WHERE grade != 'U')),
-
-totalCredits AS
-(SELECT student, SUM(credits) AS totalcredits
-    FROM Taken LEFT OUTER JOIN Courses ON code=course
-        WHERE grade != 'U'
-            GROUP BY student),
-
-mandatoryLeft AS
-(SELECT student, COUNT(course) AS mandatoryleft
-    FROM UnreadMandatory
-        GROUP BY student),
-
-
-mathCredits AS
-(SELECT student, SUM(credits) AS mathcredits 
-    FROM PassedCourses RIGHT OUTER JOIN Classified USING (course)
-        WHERE classification = 'math'
-            GROUP BY student)
-
-SELECT * FROM mathCredits
 
