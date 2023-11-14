@@ -25,8 +25,8 @@ CREATE TABLE LimitedCourses (
 
 CREATE TABLE StudentBranches (
     student CHAR(10) PRIMARY KEY REFERENCES Students,
-    branch TEXT,
-    program TEXT,
+    branch TEXT NOT NULL,
+    program TEXT NOT NULL,
     FOREIGN KEY (branch, program) REFERENCES Branches(name, program)
 );
 
