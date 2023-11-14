@@ -10,11 +10,10 @@ CREATE VIEW FinishedCourses AS
 
 CREATE VIEW Registrations AS
     (SELECT idnr AS student, course, 'registered' AS status
-        FROM Students JOIN Registered ON idnr=student)
+        FROM Students RIGHT OUTER JOIN Registered ON idnr=student)
     UNION
     (SELECT idnr AS student, course, 'waiting' AS status 
-        FROM Students, Registered
-            WHERE (idnr, course) IN (SELECT student, course FROM WaitingList));
+        FROM Students RIGHT OUTER JOIN WaitingList ON idnr=student);
 
 
 CREATE VIEW PathToGraduation AS
@@ -26,13 +25,13 @@ PassedCourses AS
 
 UnreadMandatory AS
 ((SELECT student, course
-    FROM (
+    FROM 
 
 (SELECT idnr AS student, course
-    FROM Students NATURAL JOIN MandatoryProgram)
+    FROM Students NATURAL JOIN MandatoryProgram) AS a
 UNION
 (SELECT student, course
-    FROM StudentBranches NATURAL JOIN MandatoryBranch)))
+    FROM StudentBranches NATURAL JOIN MandatoryBranch)) 
 
 EXCEPT
 (SELECT student, course FROM FinishedCourses WHERE grade != 'U')),
@@ -68,25 +67,25 @@ RecommendedCourses AS
                 ),
 
 qualified AS
-((SELECT idnr AS student, 't' AS qualified
+((SELECT idnr AS student, TRUE AS qualified
     FROM Students
         WHERE idnr NOT IN (SELECT student FROM mandatoryLeft))
 
 INTERSECT
 
-(SELECT student, 't' AS qualified
+(SELECT student, TRUE AS qualified
     FROM mathCredits
         WHERE mathcredits >= 20)
 
 INTERSECT
 
-(SELECT student, 't' AS qualified
+(SELECT student, TRUE AS qualified
     FROM seminarCourses
         WHERE seminarcourses >= 1)
 
 INTERSECT
 
-(SELECT student, 't' AS qualified
+(SELECT student, TRUE AS qualified
     FROM RecommendedCourses
         WHERE (student, course) IN (SELECT student, course FROM PassedCourses)
             GROUP BY(student)
