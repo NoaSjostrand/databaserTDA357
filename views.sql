@@ -1,19 +1,19 @@
 CREATE VIEW BasicInformation AS 
     SELECT idnr, name, login, Students.program, branch
-        FROM Students LEFT OUTER JOIN StudentBranches ON idnr=student;
+        FROM Students LEFT OUTER JOIN StudentBranches ON idnr=student; --borde funka med Natural join här?
 
 
 CREATE VIEW FinishedCourses AS
     SELECT student, course, name AS courseName, grade, credits
-        FROM Taken LEFT OUTER JOIN Courses ON course=code;
+        FROM Taken LEFT OUTER JOIN Courses ON course=code; --borde funka med Natural join här?
 
 
 CREATE VIEW Registrations AS
     (SELECT idnr AS student, course, 'registered' AS status
-        FROM Students RIGHT OUTER JOIN Registered ON idnr=student)
+        FROM Students RIGHT OUTER JOIN Registered ON idnr=student) --borde funka med Natural join här?
     UNION
     (SELECT idnr AS student, course, 'waiting' AS status 
-        FROM Students RIGHT OUTER JOIN WaitingList ON idnr=student);
+        FROM Students RIGHT OUTER JOIN WaitingList ON idnr=student); --borde funka med Natural join här?
 
 
 CREATE VIEW PathToGraduation AS
