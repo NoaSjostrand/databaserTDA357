@@ -1,0 +1,64 @@
+Students(_idnr_, sname, login, program)
+	login UNIQUE
+	program -> Programs.pname
+
+Courses(_code_, cname, credits)
+
+Programs(pname, pcode)
+
+Departments(dname, dcode)
+	dcode UNIQUE
+
+Classifications(classname)
+
+LimitedCourses(code, capacity)
+	code -> Courses.code
+
+WaitingList(student, code, position)
+	student -> Students.idnr
+	code -> LimitedCourses.code
+	(code, position) UNIQUE
+
+Registered(student, code)
+	student -> Students.idnr
+	code -> Courses.code
+
+TakenBy(student, code, grade)
+	student -> Students.idnr
+	code -> Courses.code
+
+Classified(code, class)
+	code -> Courses.code
+	class -> Classifications.classname
+
+Prerequisites(predecessor, course)
+	predecessor -> Courses.code
+	course -> Courses.code
+
+CourseByDepartment(department, course)
+	department -> Departments.dname
+	course -> Courses.code
+
+RecommendedBranch(course, branch)
+	course -> Courses.code
+	branch -> Branches.bname
+
+MandatoryBranch(course, branch)
+	course -> Courses.code
+	branch -> Branches.bname
+
+MandatoryProgram(course, program)
+	course -> Courses.code
+	program -> Programs.pname
+
+ProgramHost(department, program)
+	department -> Departments.dname
+	program -> Programs.pname
+
+StudentBranches(student, branch, program)
+	student, program -> Students(idnr, program)
+	branch, program -> Branches(bname, program)
+	
+Branches(bname, program)
+	program -> Programs.pname
+
