@@ -18,10 +18,7 @@ IF NEW.course IS NULL THEN
     RAISE EXCEPTION 'course can not be NULL';
 END IF;
 
-IF NOT EXISTS (SELECT course FROM Prerequisites WHERE Prerequisites.course = NEW.course) THEN
-    NULL;
-
-ELSIF ((SELECT COUNT(*) FROM Prerequisites, Taken
+IF ((SELECT COUNT(*) FROM Prerequisites, Taken
                 WHERE predecessor = Taken.course
                     AND student = NEW.student AND grade != 'U' AND Prerequisites.course = NEW.course) !=
                         (SELECT COUNT(*) FROM Prerequisites
