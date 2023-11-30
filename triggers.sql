@@ -21,9 +21,11 @@ END IF;
 IF NOT EXISTS (SELECT course FROM Prerequisites WHERE Prerequisites.course = NEW.course) THEN
     NULL;
 
-ELSIF NOT EXISTS (SELECT * FROM Prerequisites, Taken
+ELSIF ((SELECT COUNT(*) FROM Prerequisites, Taken
                 WHERE predecessor = Taken.course
-                    AND student = NEW.student AND grade != 'U') THEN
+                    AND student = NEW.student AND grade != 'U' AND Prerequisites.course = NEW.course) !=
+                        (SELECT COUNT(*) FROM Prerequisites
+                            WHERE Prerequisites.course = NEW.course)) THEN
                         RAISE EXCEPTION 'prerequisites not taken';
 END IF;
 
