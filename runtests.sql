@@ -14,9 +14,17 @@ SET client_min_messages TO NOTICE; -- More talk
 
 -- \ir is for include relative, it will run files in the same directory as this file
 -- Note that these are not SQL statements but rather Postgres commands (no terminating semicolon). 
-\ir tables_new.sql
-\ir inserts_new.sql
+\ir tables.sql
+\ir inserts.sql
 \ir views.sql
+\ir triggers.sql
+
+INSERT INTO Registrations VALUES('3333333333', 'CCC222', 'registered');
+
+INSERT INTO Taken VALUES('1111111111', 'CCC111', 'U');
+INSERT INTO Taken VALUES('1111111111', 'CCC222', 'U');
+
+INSERT INTO Registrations VALUES('1111111111', 'CCC444', 'registered');
 
 
 
