@@ -15,11 +15,18 @@ SET client_min_messages TO NOTICE; -- More talk
 -- \ir is for include relative, it will run files in the same directory as this file
 -- Note that these are not SQL statements but rather Postgres commands (no terminating semicolon). 
 \ir tables.sql
-\ir inserts.sql
 \ir views.sql
 \ir triggers.sql
+\ir inserts.sql
+
+
 
 INSERT INTO Registrations VALUES('3333333333', 'CCC222', 'registered');
+-- INSERT INTO Registrations VALUES('4444444444', 'CCC222', 'registered');
+-- INSERT INTO Registrations VALUES('1111111111', 'CCC222', 'registered');
+DELETE FROM Registrations WHERE (student, course) = ('1111111111', 'CCC222');
+
+
 
 INSERT INTO Prerequisites VALUES ('CCC555', 'CCC333'); -- TEst
 
@@ -32,15 +39,18 @@ INSERT INTO Taken VALUES('1111111111', 'CCC555', 'U');
 INSERT INTO Registrations VALUES('1111111111', 'CCC444', 'registered');
 
 
+SELECT * FROM WaitingList;
+SELECT * FROM Registered;
+
 
 -- Tests various queries from the assignment, uncomment these as you make progress
-SELECT idnr, name, login, program, branch FROM BasicInformation ORDER BY idnr;
+-- SELECT idnr, name, login, program, branch FROM BasicInformation ORDER BY idnr;
 
-SELECT student, course, courseName, grade, credits FROM FinishedCourses ORDER BY (student, course);
+-- SELECT student, course, courseName, grade, credits FROM FinishedCourses ORDER BY (student, course);
 
-SELECT student, course, status FROM Registrations ORDER BY (status, course, student);
+-- SELECT student, course, status FROM Registrations ORDER BY (status, course, student);
 
-SELECT student, totalCredits, mandatoryLeft, mathCredits, seminarCourses, qualified FROM PathToGraduation ORDER BY student;
+-- SELECT student, totalCredits, mandatoryLeft, mathCredits, seminarCourses, qualified FROM PathToGraduation ORDER BY student;
 
 -- Helper views for PathToGraduation (optional)
 --SELECT student, course, credits FROM PassedCourses ORDER BY (student, course);
