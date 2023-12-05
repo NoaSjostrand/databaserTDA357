@@ -18,7 +18,7 @@ IF NOT EXISTS (SELECT idnr FROM Students WHERE Students.idnr = NEW.student) THEN
 END IF;
 
 IF NEW.course IS NULL THEN
-    RAISE EXCEPTION 'course can not be NULL';
+    RAISE EXCEPTION 'Course can not be NULL';
 END IF;
 
 
@@ -40,7 +40,7 @@ IF ((SELECT COUNT(*) FROM Prerequisites, Taken
                     AND student = NEW.student AND grade != 'U' AND Prerequisites.course = NEW.course) !=
                         (SELECT COUNT(*) FROM Prerequisites
                             WHERE Prerequisites.course = NEW.course)) THEN
-                        RAISE EXCEPTION 'prerequisites not taken';
+                        RAISE EXCEPTION 'Prerequisites not taken';
 END IF;
 
 
@@ -73,26 +73,45 @@ $$ LANGUAGE SQL;
 -- Tries to unreg student
 CREATE FUNCTION uncheck_reg() RETURNS trigger AS 
 $$
+DECLARE theStudent VARCHAR;
 BEGIN
 
--- IF student was registered THEN remove from Registered AND ADD first person from WaitingList (if not overfull)
-IF EXISTS (SELECT * FROM Registered WHERE (Registered.student, Registered.course) = (OLD.student, OLD.course)) THEN
 
+-- Student, Course pair do not exist in Registered
+IF NOT EXISTS (SELECT student, course FROM Registered WHERE (Registered.student, Registered.course) = (OLD.student, OLD.course) UNION
+                SELECT student, course FROM WaitingList WHERE (WaitingList.student, WaitingList.course) = (OLD.student, OLD.course)) THEN
+    RAISE EXCEPTION 'Student is not registered or waiting';
+END IF;
+
+
+-- IF student was registered THEN remove from Registered AND ADD first person from WaitingList (if not overfull)
+theStudent := (SELECT student from WaitingList WHERE WaitingList.position=1 AND WaitingList.course = OLD.course);
+IF (SELECT COUNT(*) FROM Registered WHERE Registered.course = OLD.course) <= (SELECT capacity FROM LimitedCourses WHERE LimitedCourses.code = OLD.course) THEN
+    DELETE FROM WaitingList WHERE WaitingList.student = theStudent AND WaitingList.course = OLD.course;
+    INSERT INTO Registrations VALUES (theStudent, OLD.course, 'registered');
+
+
+END IF;
 
 
 -- IF student was IN WaitingList THEN remove from list AND move up students in queue
 
 
+DELETE FROM Registered WHERE student = OLD.student AND course = OLD.course;
 
 RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 
-CREATE FUNCTION decreaseQueue(CHAR(6), INT)
-    RETURNS BIGINT AS
-$$ SELECT COUNT(*) +1 FROM WaitingList WHERE course =$1
-$$ LANGUAGE SQL;
+CREATE FUNCTION decreaseQueue()
+    RETURNS trigger AS $$
+BEGIN
+    UPDATE WaitingList SET position = position-1
+        WHERE course = OLD.course AND position > OLD.position;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
 
 
 CREATE TRIGGER CheckReg INSTEAD OF INSERT ON Registrations
@@ -100,3 +119,6 @@ CREATE TRIGGER CheckReg INSTEAD OF INSERT ON Registrations
 
 CREATE TRIGGER CheckUnReg INSTEAD OF DELETE ON Registrations
     FOR EACH ROW EXECUTE PROCEDURE uncheck_reg();
+
+CREATE TRIGGER UpdateWaitingList AFTER DELETE ON WaitingList
+    FOR EACH ROW EXECUTE PROCEDURE decreaseQueue();

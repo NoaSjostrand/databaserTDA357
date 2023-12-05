@@ -21,26 +21,27 @@ SET client_min_messages TO NOTICE; -- More talk
 
 
 
-INSERT INTO Registrations VALUES('3333333333', 'CCC222', 'registered');
--- INSERT INTO Registrations VALUES('4444444444', 'CCC222', 'registered');
--- INSERT INTO Registrations VALUES('1111111111', 'CCC222', 'registered');
-DELETE FROM Registrations WHERE (student, course) = ('1111111111', 'CCC222');
+SELECT * FROM WaitingList;
+SELECT * FROM Registrations;
 
-
-
-INSERT INTO Prerequisites VALUES ('CCC555', 'CCC333'); -- TEst
-
-
-INSERT INTO Taken VALUES('1111111111', 'CCC111', '3');
-INSERT INTO Taken VALUES('1111111111', 'CCC222', '3');
-INSERT INTO Taken VALUES('1111111111', 'CCC555', 'U');
-
-
-INSERT INTO Registrations VALUES('1111111111', 'CCC444', 'registered');
+-- DELETE FROM Registrations WHERE (student, course) = ('1111111111', 'CCC222');
 
 
 SELECT * FROM WaitingList;
-SELECT * FROM Registered;
+SELECT * FROM Registrations;
+
+-- INSERT INTO Prerequisites VALUES ('CCC555', 'CCC333'); -- TEst
+
+
+-- INSERT INTO Taken VALUES('1111111111', 'CCC111', '3');
+-- INSERT INTO Taken VALUES('1111111111', 'CCC222', '3');
+-- INSERT INTO Taken VALUES('1111111111', 'CCC555', 'U');
+
+
+-- INSERT INTO Registrations VALUES('1111111111', 'CCC444', 'registered');
+
+
+
 
 
 -- Tests various queries from the assignment, uncomment these as you make progress
