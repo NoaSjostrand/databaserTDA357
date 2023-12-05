@@ -86,9 +86,13 @@ END IF;
 
 -- IF student was registered THEN remove from Registered AND ADD first person from WaitingList (if not overfull)
 theStudent := (SELECT student from WaitingList WHERE WaitingList.position=1 AND WaitingList.course = OLD.course);
-IF (SELECT COUNT(*) FROM Registered WHERE Registered.course = OLD.course) <= (SELECT capacity FROM LimitedCourses WHERE LimitedCourses.code = OLD.course) THEN
+IF ((SELECT COUNT(*) FROM Registered WHERE Registered.course = OLD.course) <= (SELECT capacity FROM LimitedCourses WHERE LimitedCourses.code = OLD.course)) THEN
+    
+    
     DELETE FROM WaitingList WHERE WaitingList.student = theStudent AND WaitingList.course = OLD.course;
     INSERT INTO Registrations VALUES (theStudent, OLD.course, 'registered');
+
+    DELETE FROM Registered WHERE student = OLD.student AND course = OLD.course;
 
 
 END IF;
@@ -97,7 +101,7 @@ END IF;
 -- IF student was IN WaitingList THEN remove from list AND move up students in queue
 
 
-DELETE FROM Registered WHERE student = OLD.student AND course = OLD.course;
+
 
 RETURN NEW;
 END;
