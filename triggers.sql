@@ -21,6 +21,9 @@ IF NEW.course IS NULL THEN
     RAISE EXCEPTION 'Course can not be NULL';
 END IF;
 
+IF NOT EXISTS (SELECT code FROM Courses WHERE Courses.code = NEW.course) THEN
+    RAISE EXCEPTION 'Course does not exist';
+END IF;
 
 -- Check if course is already passed
 IF EXISTS (SELECT * FROM Taken WHERE (Taken.student, Taken.course) = (NEW.student, NEW.course) AND Taken.grade != 'U') THEN
@@ -76,6 +79,21 @@ $$
 DECLARE theStudent VARCHAR;
 BEGIN
 
+IF OLD.student IS NULL THEN
+    RAISE EXCEPTION 'student can not be NULL';
+END IF;
+
+IF OLD.course IS NULL THEN
+    RAISE EXCEPTION 'course can not be NULL';
+END IF;
+
+IF NOT EXISTS (SELECT idnr FROM Students WHERE Students.idnr = OLD.student) THEN
+    RAISE EXCEPTION 'Student does not exist';
+END IF;
+
+IF NOT EXISTS (SELECT code FROM Courses WHERE Courses.code = OLD.course) THEN
+    RAISE EXCEPTION 'Course does not exist';
+END IF;
 
 -- Student, Course pair do not exist in Registered
 IF NOT EXISTS (SELECT student, course FROM Registered WHERE (Registered.student, Registered.course) = (OLD.student, OLD.course) UNION
@@ -83,25 +101,13 @@ IF NOT EXISTS (SELECT student, course FROM Registered WHERE (Registered.student,
     RAISE EXCEPTION 'Student is not registered or waiting';
 END IF;
 
-
 -- IF student was registered THEN remove from Registered AND ADD first person from WaitingList (if not overfull)
 theStudent := (SELECT student from WaitingList WHERE WaitingList.position=1 AND WaitingList.course = OLD.course);
 IF ((SELECT COUNT(*) FROM Registered WHERE Registered.course = OLD.course) <= (SELECT capacity FROM LimitedCourses WHERE LimitedCourses.code = OLD.course)) THEN
-    
-    
+    DELETE FROM Registered WHERE student = OLD.student AND course = OLD.course;
     DELETE FROM WaitingList WHERE WaitingList.student = theStudent AND WaitingList.course = OLD.course;
     INSERT INTO Registrations VALUES (theStudent, OLD.course, 'registered');
-
-    DELETE FROM Registered WHERE student = OLD.student AND course = OLD.course;
-
-
 END IF;
-
-
--- IF student was IN WaitingList THEN remove from list AND move up students in queue
-
-
-
 
 RETURN NEW;
 END;

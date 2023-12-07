@@ -21,13 +21,17 @@ SET client_min_messages TO NOTICE; -- More talk
 
 
 INSERT INTO Registrations VALUES ('3333333333', 'CCC222');
+INSERT INTO Registrations VALUES ('5555555555', 'CCC222');
+INSERT INTO Registrations VALUES ('6666666666', 'CCC222');
+
+
 
 SELECT * FROM WaitingList;
 SELECT * FROM Registrations;
 
-DELETE FROM Registrations WHERE (student, course) = ('1111111111', 'CCC222');
-DELETE FROM Registrations WHERE (student, course) = ('2222222222', 'CCC222');
-
+-- DELETE FROM Registrations WHERE (student, course) = ('1111111111', 'CCC222');
+-- DELETE FROM Registrations WHERE (student, course) = ('2222222222', 'CCC222');
+-- DELETE FROM WaitingList WHERE (student, course) = ('5555555555', 'CCC222');
 
 
 SELECT * FROM WaitingList;
