@@ -55,9 +55,9 @@ class PortalConnection:
             #Your code goes here! Remove this comment and the line below it. 
             with self.conn.cursor() as cur:
 
-                cur.execute("""
-                        DELETE FROM Registrations WHERE student = %s AND course = %s""", (student, courseCode))
-            
+                cur.execute(
+                        #f'DELETE FROM Registrations WHERE student = {student} AND course = {courseCode}')
+                        """ DELETE FROM Registrations WHERE student = %s AND course = %s""", (student, courseCode))
             if cur.rowcount == 0:
                 return '{"success":false, "error": "Not a valid input"}'
             return '{"success":true}'
