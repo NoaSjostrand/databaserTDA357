@@ -3,7 +3,7 @@ from urllib.parse import urlparse, unquote
 import PortalConnection
 
 hostName = "localhost"
-serverPort = 80
+serverPort = 9000
 
 conn = PortalConnection.PortalConnection()
 

@@ -91,13 +91,12 @@ IF NOT EXISTS (SELECT idnr FROM Students WHERE Students.idnr = OLD.student) THEN
     RAISE EXCEPTION 'Student does not exist';
 END IF;
 
-IF NOT EXISTS (SELECT code FROM Courses WHERE Courses.code = OLD.course) THEN
+IF NOT EXISTS (SELECT * FROM Courses WHERE Courses.code = OLD.course) THEN
     RAISE EXCEPTION 'Course does not exist';
 END IF;
 
 -- Student, Course pair do not exist in Registered
-IF NOT EXISTS (SELECT student, course FROM Registered WHERE (Registered.student, Registered.course) = (OLD.student, OLD.course) UNION
-                SELECT student, course FROM WaitingList WHERE (WaitingList.student, WaitingList.course) = (OLD.student, OLD.course)) THEN
+IF NOT EXISTS (SELECT * FROM Registrations WHERE (Registrations.student, Registrations.course) = (OLD.student, OLD.course)) THEN
     RAISE EXCEPTION 'Student is not registered or waiting';
 END IF;
 
@@ -109,7 +108,10 @@ IF ((SELECT COUNT(*) FROM Registered WHERE Registered.course = OLD.course) <= (S
     INSERT INTO Registrations VALUES (theStudent, OLD.course, 'registered');
 END IF;
 
-RETURN NEW;
+DELETE FROM Registered WHERE student = OLD.student AND course = OLD.course;
+DELETE FROM WaitingList WHERE WaitingList.student = OLD.student AND WaitingList.course = OLD.course;
+
+RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
 
