@@ -36,7 +36,7 @@ class PortalConnection:
         else:
             return """{"student":"Not found :("}"""
 
-    def register(self, student, courseCode):
+    def register(self, student: str, courseCode: str):
         try:
             #Your code goes here! Remove this comment and the line below it.
             with self.conn.cursor() as cur:
@@ -56,8 +56,8 @@ class PortalConnection:
             with self.conn.cursor() as cur:
 
                 cur.execute(
-                        #f'DELETE FROM Registrations WHERE student = {student} AND course = {courseCode}')
-                        """ DELETE FROM Registrations WHERE student = %s AND course = %s""", (student, courseCode))
+                        "DELETE FROM Registrations WHERE student = '"+student+"' AND course = '"+courseCode+"'")
+                        #""" DELETE FROM Registrations WHERE student = %s AND course = %s""", (student, courseCode))
             if cur.rowcount == 0:
                 return '{"success":false, "error": "Not a valid input"}'
             return '{"success":true}'
