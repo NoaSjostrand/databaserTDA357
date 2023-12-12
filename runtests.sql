@@ -23,14 +23,16 @@ SET client_min_messages TO NOTICE; -- More talk
 
 
 
-SELECT * FROM WaitingList;
+/* SELECT * FROM WaitingList;
 SELECT * FROM Registrations;
 SELECT * FROM Courses;
 
 
 
 SELECT * FROM WaitingList;
-SELECT * FROM Registrations;
+SELECT * FROM Registrations; */
+
+
 
 -- INSERT INTO Prerequisites VALUES ('CCC555', 'CCC333'); -- TEst
 
